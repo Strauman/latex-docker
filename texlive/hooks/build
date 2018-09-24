@@ -1,3 +1,8 @@
-#!/bin/sh
-docker build --build-arg scheme=small -t "$IMAGE_NAME-small" .
-docker build --build-arg scheme=medium -t "$IMAGE_NAME-medium" .
+#!/bin/bash
+# Build hooks docs:
+# https://docs.docker.com/docker-cloud/builds/advanced/#override-build-test-or-push-commands
+echo "Now in `pwd`"
+echo "Building small"
+docker build --build-arg scheme=small -f $DOCKERFILE_PATH -t "$IMAGE_NAME-small" .
+# echo "Building small as medium"
+# docker build --build-arg scheme=small -f $DOCKERFILE_PATH -t "$IMAGE_NAME-medium" .
