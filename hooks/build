@@ -1,0 +1,3 @@
+#!/bin/sh
+docker build --build-arg scheme=small -t "$IMAGE_NAME-small" .
+docker build --build-arg scheme=medium -t "$IMAGE_NAME-medium" .
