@@ -3,6 +3,8 @@
 # https://docs.docker.com/docker-cloud/builds/advanced/#override-build-test-or-push-commands
 echo "Now in `pwd`"
 echo "Building small"
-docker build --build-arg scheme=small -f $DOCKERFILE_PATH -t "$IMAGE_NAME-small" .
+echo "Path: $DOCKERFILE_PATH"
+echo "Image: $IMAGE_NAME"
+docker build --build-arg scheme="small" -t "$IMAGE_NAME" -f "$DOCKERFILE_PATH" .
 # echo "Building small as medium"
 # docker build --build-arg scheme=small -f $DOCKERFILE_PATH -t "$IMAGE_NAME-medium" .
