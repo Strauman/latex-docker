@@ -12,9 +12,14 @@ build_scheme(){
 }
 # build_scheme "small"
 # build_scheme "small"
+export IMAGE_NAME="$DOCKER_REPO:tl-small"
 echo "Building actual small"
-docker build --build-arg scheme="small" -t "$DOCKER_REPO:tl-small" -f "$DOCKERFILE_PATH" .
-echo "Building mediuma as small"
-docker build --build-arg scheme="small" -t "$DOCKER_REPO:tl-medium" -f "$DOCKERFILE_PATH" .
+docker build --build-arg scheme="small" -t "$IMAGE_NAME" -f "$DOCKERFILE_PATH" .
+echo "Pushing"
+docker tag $IMAGE_NAME $DOCKER_REPO:$SOURCE_COMMIT
+docker push $IMAGE_NAME
+
+# echo "Building mediuma as small"
+# docker build --build-arg scheme="small" -t "$DOCKER_REPO:tl-medium" -f "$DOCKERFILE_PATH" .
 # echo "Building small as medium"
 # docker build --build-arg scheme=small -f $DOCKERFILE_PATH -t "$IMAGE_NAME-medium" .
