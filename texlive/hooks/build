@@ -5,6 +5,16 @@ echo "Now in `pwd`"
 echo "Building small"
 echo "Path: $DOCKERFILE_PATH"
 echo "Image: $IMAGE_NAME"
-docker build --build-arg scheme="small" -t "$IMAGE_NAME" -f "$DOCKERFILE_PATH" .
+build_scheme(){
+    scheme_name="$1"
+    echo "Building scheme $scheme_name"
+    docker build --build-arg scheme="$scheme_name" -t "$DOCKER_REPO-$scheme_name" -f "$DOCKERFILE_PATH" .
+}
+# build_scheme "small"
+# build_scheme "small"
+echo "Building actual small"
+docker build --build-arg scheme="small" -t "$DOCKER_REPO:tl-small" -f "$DOCKERFILE_PATH" .
+echo "Building mediuma as small"
+docker build --build-arg scheme="small" -t "$DOCKER_REPO:tl-medium" -f "$DOCKERFILE_PATH" .
 # echo "Building small as medium"
 # docker build --build-arg scheme=small -f $DOCKERFILE_PATH -t "$IMAGE_NAME-medium" .
