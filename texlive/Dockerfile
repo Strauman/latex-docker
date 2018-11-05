@@ -15,4 +15,5 @@ RUN wget ftp://tug.org/historic/systems/texlive/2018/install-tl-unx.tar.gz \
     && ./install-tl --profile texlive.profile
 
 ENV PATH="/usr/local/texlive/2018/bin/x86_64-linuxmusl:${PATH}"
+RUN tlmgr update --self
 RUN tlmgr install latexmk
