@@ -1,7 +1,7 @@
 # latex-docker
 Dockers for running LaTeX. Currently only TeXLive.
 
-Made for use in the more complete [travis-LaTeXBuild](https://github.com/Strauman/travis-latexbuild) repo.
+Made for use in the more self sustained [travis-LaTeXBuild](https://github.com/Strauman/travis-latexbuild) repo.
 
 ## texlive dockers
 `docker pull strauman/tex:SCHEME` where `SCHEME` is one of `small`, `medium` or `large`.
