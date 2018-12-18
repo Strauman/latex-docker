@@ -1,5 +1,5 @@
 # Generates a TeXLive docker
-FROM gliderlabs/alpine:latest
+FROM alpine:latest
 ARG scheme
 
 RUN mkdir /tmp/install-tl-unx
@@ -9,7 +9,7 @@ WORKDIR /tmp/install-tl-unx
 COPY TeXProfiles/texlive-$scheme.profile ./texlive.profile
 
 # Install TeX Live 2018 with some basic collections
-RUN apk-install perl wget
+RUN apk add --no-cache --update perl wget
 RUN wget ftp://tug.org/historic/systems/texlive/2018/install-tl-unx.tar.gz \
     && tar --strip-components=1 -xvf install-tl-unx.tar.gz \
     && ./install-tl --profile texlive.profile
