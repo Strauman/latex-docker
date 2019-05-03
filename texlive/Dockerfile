@@ -18,6 +18,5 @@ RUN wget $installfile \
 # RUN ./install-tl --profile texlive.profile --repository=ftp://tug.org/historic/systems/texlive/$tl_version/tlnet-final
 RUN ./install-tl --profile texlive.profile --repository="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/$tl_version/tlnet-final/"
 ENV PATH="/usr/local/texlive/$tl_version/bin/x86_64-linuxmusl:${PATH}"
-# RUN tlmgr update --self
-# RUN tlmgr install latexmk
-# RUN /bin/sh
+RUN tlmgr update --self
+RUN tlmgr install latexmk

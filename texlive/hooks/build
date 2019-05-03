@@ -49,18 +49,18 @@ set_latest(){
   target_suffix="$1"
   add_tag "tl-small-$target_suffix" "tl-small"
   add_tag "tl-small-$target_suffix" "tl-small-latest"
-  if [ -z "$LOCAL_DOCKER" ]; then
+  if [ ! -z "$LOCAL_DOCKER" ]; then
     add_tag "tl-medium-$target_suffix" "tl-medium"
-    add_tag "tl-medium-$target_suffix" "tl-medium:latest"
+    add_tag "tl-medium-$target_suffix" "tl-medium-latest"
     add_tag "tl-full-$target_suffix" "tl-full"
-    add_tag "tl-full-$target_suffix" "tl-full:latest"
+    add_tag "tl-full-$target_suffix" "tl-full-latest"
   fi
 }
 build_schemes(){
   if [ -z "$LOCAL_DOCKER" ]; then
     build_scheme "small" "2018" "$tar_2018"
-    # build_scheme "medium" "2018" "$tar_2018"
-    # build_scheme "full" "2018" "$tar_2018"
+    build_scheme "medium" "2018" "$tar_2018"
+    build_scheme "full" "2018" "$tar_2018"
     set_latest "2018"
   else
     build_scheme "minimal" "2018" "$tar_2018"
