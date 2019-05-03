@@ -11,20 +11,29 @@ echo "Building small"
 echo "Path: $DOCKERFILE_PATH"
 echo "Image: $IMAGE_NAME"
 echo ""
+
+tar_2018="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/install-tl-unx.tar.gz"
+
 build_scheme(){
-    scheme_name="$1"
-    scheme_suffix="$2"
-    IMAGE_NAME="$DOCKER_REPO:tl-$scheme_name"
-    if [ ! -z "$scheme_suffix" ]; then
-      IMAGE_NAME="$IMAGE_NAME-$scheme_suffix"
-    fi
-    export IMAGE_NAME;
-    echo "Building actual $scheme_name ($IMAGE_NAME)"
-    docker build --build-arg scheme="$scheme_name" -t "$IMAGE_NAME" -f "$DOCKERFILE_PATH" .
-    if [ -z "$LOCAL_DOCKER" ]; then
-      echo "Pushing $scheme_name ($IMAGE_NAME)"
-      docker push $IMAGE_NAME
-    fi
+  scheme_name="$1"
+  tl_version="$2"
+  tar_install_url="$3"
+  IMAGE_NAME="$DOCKER_REPO:tl-$scheme_name"
+  if [ ! -z "$tl_version" ]; then
+    IMAGE_NAME="$IMAGE_NAME-$tl_version"
+  fi
+  export IMAGE_NAME;
+  echo "Building actual $scheme_name ($IMAGE_NAME)"
+  docker build \
+    --build-arg scheme="$scheme_name" \
+    --build-arg tl_version="$2" \
+    --build-arg installfile="$tar_install_url"\
+    -t "$IMAGE_NAME" -f "$DOCKERFILE_PATH" .
+
+  if [ -z "$LOCAL_DOCKER" ]; then
+    echo "Pushing $scheme_name ($IMAGE_NAME)"
+    docker push $IMAGE_NAME
+  fi
 }
 add_tag(){
   existing_tag="$1"
@@ -48,12 +57,12 @@ set_latest(){
 }
 build_schemes(){
   if [ -z "$LOCAL_DOCKER" ]; then
-    build_scheme "small" "2018"
-    build_scheme "medium" "2018"
-    build_scheme "full" "2018"
+    build_scheme "small" "2018" "$tar_2018"
+    build_scheme "medium" "2018" "$tar_2018"
+    build_scheme "full" "2018" "$tar_2018"
     set_latest "2018"
   else
-    build_scheme "small" "2018"
+    build_scheme "small" "2018" "$tar_2018"
     set_latest "2018"
   fi
 }
