@@ -4,7 +4,7 @@ Dockers for running LaTeX. Currently only TeXLive.
 Made for use in the more self sustained [travis-LaTeXBuild](https://github.com/Strauman/travis-latexbuild) repo.
 
 ## texlive dockers
-`docker pull strauman/tex:SCHEME` where `SCHEME` is one of `small`, `medium` or `large`.
+`docker pull strauman/tex:SCHEME` where `SCHEME` is one of `basic`, `small`, `medium` or `large`.
 
 `SCHEME` can also contain a version specification. E.g. `tex:small-2018` or `tex:medium-latest`.
 `-latest` can be omitted, such that `tex:small-latest` is equvalent to `tex:small`.
@@ -15,7 +15,7 @@ that builds your LaTeX
 
 ```
 FROM strauman/tex:small
-RUN tlmgr install latexmk lipsum pgf koma-script xcolor
+RUN tlmgr install latexmk lipsum pgf koma-script xcolori
 
 RUN mkdir /my_mounted_dir/
 WORKDIR /repo

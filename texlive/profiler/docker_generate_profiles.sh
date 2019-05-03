@@ -5,6 +5,7 @@ make_scheme_profile(){
   ./install-tl --repository $CTAN_REPO --scheme "$scheme_name"
   cp "texlive.profile" "/root/profiles_out/$TL_VERSION/texlive-$scheme_name.profile"
 }
+make_scheme_profile "basic"
 make_scheme_profile "small"
 make_scheme_profile "medium"
 make_scheme_profile "full"

@@ -1,13 +1,14 @@
 #!/bin/bash
 # Build hooks docs:
 # https://docs.docker.com/docker-cloud/builds/advanced/#override-build-test-or-push-commands
+# $LOCAL_DOCKER is "true" if you run this file via texlive/localbuild.sh
 if [ -z $LOCAL_DOCKER ]; then
   echo "NOT BUILDING LOCAL DOCKER"
 else
   echo "BUILDING DOCKER LOCALLY. ONLY BUILDING SMALL BY DEFAULT."
 fi
 echo "Now in `pwd`"
-echo "Building small"
+echo "Building"
 echo "Path: $DOCKERFILE_PATH"
 echo "Image: $IMAGE_NAME"
 echo ""
@@ -34,6 +35,7 @@ build_scheme(){
     -t "$IMAGE_NAME" -f "$DOCKERFILE_PATH" .
 
   if [ -z "$LOCAL_DOCKER" ]; then
+    # We're on the docker hub, so let's push the tags as well
     echo "Pushing $scheme_name ($IMAGE_NAME)"
     docker push $IMAGE_NAME
   fi
@@ -43,19 +45,25 @@ add_tag(){
   new_tag="$2"
   docker tag "$DOCKER_REPO:$existing_tag" "$DOCKER_REPO:$new_tag"
   if [ -z "$LOCAL_DOCKER" ]; then
+    # We're on the docker hub, so let's push the tags as well
     echo "Pushing updated $DOCKER_REPO:$existing_tag with new tag $DOCKER_REPO:$new_tag"
     docker push "$DOCKER_REPO:$existing_tag"
   fi
 }
+_set_latest(){
+  target_suffix="$1"
+  scheme_name="$2"
+  add_tag "tl-$scheme_name-$target_suffix" "tl-$scheme_name"
+  add_tag "tl-$scheme_name-$target_suffix" "tl-$scheme_name-latest-latest"
+}
 set_latest(){
   target_suffix="$1"
-  add_tag "tl-small-$target_suffix" "tl-small"
-  add_tag "tl-small-$target_suffix" "tl-small-latest"
+  _set_latest "$target_suffix" "basic"
+  _set_latest "$target_suffix" "small"
   if [ -z "$LOCAL_DOCKER" ]; then
-    add_tag "tl-medium-$target_suffix" "tl-medium"
-    add_tag "tl-medium-$target_suffix" "tl-medium-latest"
-    add_tag "tl-full-$target_suffix" "tl-full"
-    add_tag "tl-full-$target_suffix" "tl-full-latest"
+    # We're on the docker hub, so let's build medium and full too
+  _set_latest "$target_suffix" "medium"
+  # _set_latest "$target_suffix" "full"
   fi
 }
 build_schemes(){
@@ -63,19 +71,27 @@ build_schemes(){
   tar_file="$2"
   repo="$3"
   if [ -z "$LOCAL_DOCKER" ]; then
+    build_scheme "basic" "$tl_version" "$tar_file" "$repo"
     build_scheme "small" "$tl_version" "$tar_file" "$repo"
     build_scheme "medium" "$tl_version" "$tar_file" "$repo"
-    build_scheme "full" "$tl_version" "$tar_file" "$repo"
+    # build_scheme "full" "$tl_version" "$tar_file" "$repo"
   else
-    build_scheme "minimal" "$tl_version" "$tar_file" "$repo"
+    build_scheme "small" "$tl_version" "$tar_file" "$repo"
+    # build_scheme "minimal" "$tl_version" "$tar_file" "$repo"
   fi
 }
 # Remember to update repovars.env too
-tar_2018="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/install-tl-unx.tar.gz"
-repo_2018="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/"
+legacy_url(){
+  echo "http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/$1/tlnet-final/install-tl-unx.tar.gz"
+}
+legacy_repo(){
+  echo "http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/$1/tlnet-final/"
+}
+tar_2018=`legacy_url "2018"`
+repo_2018=`legacy_repo "2018"`
 tar_2019="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2019/install-tl-unx.tar.gz"
 repo_2019="https://ctan.crest.fr/tex-archive/systems/texlive/tlnet/"
 
 build_schemes "2018" "$tar_2018" "$repo_2018"
-build_schemes "2019" "$tar_2019" "$repo_2019"
-set_latest "2019"
+# build_schemes "2019" "$tar_2019" "$repo_2019"
+set_latest "2018"
