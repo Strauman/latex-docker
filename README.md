@@ -6,6 +6,9 @@ Made for use in the more self sustained [travis-LaTeXBuild](https://github.com/S
 ## texlive dockers
 `docker pull strauman/tex:SCHEME` where `SCHEME` is one of `small`, `medium` or `large`.
 
+`SCHEME` can also contain a version specification. E.g. `tex:small-2018` or `tex:medium-latest`.
+`-latest` can be omitted, such that `tex:small-latest` is equvalent to `tex:small`.
+
 Example docker file for use:
 Assume you have a script `build_my_tex.sh` in your repo,
 that builds your LaTeX
