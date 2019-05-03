@@ -58,8 +58,8 @@ set_latest(){
 build_schemes(){
   if [ -z "$LOCAL_DOCKER" ]; then
     build_scheme "small" "2018" "$tar_2018"
-    build_scheme "medium" "2018" "$tar_2018"
-    build_scheme "full" "2018" "$tar_2018"
+    # build_scheme "medium" "2018" "$tar_2018"
+    # build_scheme "full" "2018" "$tar_2018"
     set_latest "2018"
   else
     build_scheme "small" "2018" "$tar_2018"
