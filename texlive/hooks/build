@@ -1,18 +1,60 @@
 #!/bin/bash
 # Build hooks docs:
 # https://docs.docker.com/docker-cloud/builds/advanced/#override-build-test-or-push-commands
+if [ -z $LOCAL_DOCKER ]; then
+  echo "NOT BUILDING LOCAL DOCKER"
+else
+  echo "BUILDING DOCKER LOCALLY. ONLY BUILDING SMALL BY DEFAULT."
+fi
 echo "Now in `pwd`"
 echo "Building small"
 echo "Path: $DOCKERFILE_PATH"
 echo "Image: $IMAGE_NAME"
+echo ""
 build_scheme(){
     scheme_name="$1"
-    export IMAGE_NAME="$DOCKER_REPO:tl-$scheme_name"
-    echo "Building actual $scheme_name"
+    scheme_suffix="$2"
+    IMAGE_NAME="$DOCKER_REPO:tl-$scheme_name"
+    if [ ! -z "$scheme_suffix" ]; then
+      IMAGE_NAME="$IMAGE_NAME-$scheme_suffix"
+    fi
+    export IMAGE_NAME;
+    echo "Building actual $scheme_name ($IMAGE_NAME)"
     docker build --build-arg scheme="$scheme_name" -t "$IMAGE_NAME" -f "$DOCKERFILE_PATH" .
-    echo "Pushing $scheme_name ($IMAGE_NAME)"
-    docker push $IMAGE_NAME
+    if [ -z "$LOCAL_DOCKER" ]; then
+      echo "Pushing $scheme_name ($IMAGE_NAME)"
+      docker push $IMAGE_NAME
+    fi
 }
-build_scheme "small"
-build_scheme "medium"
-build_scheme "full"
+add_tag(){
+  existing_tag="$1"
+  new_tag="$2"
+  docker tag "$DOCKER_REPO:$existing_tag" "$DOCKER_REPO:$new_tag"
+  if [ -z "$LOCAL_DOCKER" ]; then
+    echo "Pushing updated $DOCKER_REPO:$existing_tag with new tag $DOCKER_REPO:$new_tag"
+    docker push "$DOCKER_REPO:$existing_tag"
+  fi
+}
+set_latest(){
+  target_suffix="$1"
+  add_tag "tl-small-$target_suffix" "tl-small"
+  add_tag "tl-small-$target_suffix" "tl-small-latest"
+  if [ -z "$LOCAL_DOCKER" ]; then
+    add_tag "tl-medium-$target_suffix" "tl-medium"
+    add_tag "tl-medium-$target_suffix" "tl-medium:latest"
+    add_tag "tl-full-$target_suffix" "tl-full"
+    add_tag "tl-full-$target_suffix" "tl-full:latest"
+  fi
+}
+build_schemes(){
+  if [ -z "$LOCAL_DOCKER" ]; then
+    build_scheme "small" "2018"
+    build_scheme "medium" "2018"
+    build_scheme "full" "2018"
+    set_latest "2018"
+  else
+    build_scheme "small" "2018"
+    set_latest "2018"
+  fi
+}
+build_schemes
