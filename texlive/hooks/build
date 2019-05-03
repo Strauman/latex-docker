@@ -77,5 +77,5 @@ tar_2019="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2019/install
 repo_2019="https://ctan.crest.fr/tex-archive/systems/texlive/tlnet/"
 
 build_schemes "2018" "$tar_2018" "$repo_2018"
-# build_schemes "2019" "$tar_2019" "$repo_2019" "$repo_2019"
-# set_latest "2019"
+build_schemes "2019" "$tar_2019" "$repo_2019"
+set_latest "2019"
