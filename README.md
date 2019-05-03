@@ -27,3 +27,8 @@ RUN chmod +x "/usr/bin/build_my_tex"
 CMD ["/usr/bin/build_my_tex"]
 
 ```
+
+
+## Instructions maintaining the docker images (only relevant if you want to e.g. clone this repo)
+- For testing purposes, run `texlive/localbuild.sh` to build the `small` scheme locally.
+- Run `profiler/make_profiles.sh` to semi-automatically make profiles for the dockers.

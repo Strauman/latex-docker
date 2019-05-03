@@ -12,13 +12,14 @@ echo "Path: $DOCKERFILE_PATH"
 echo "Image: $IMAGE_NAME"
 echo ""
 
-tar_2018="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/install-tl-unx.tar.gz"
+
 # repo_2018=""
 
 build_scheme(){
   scheme_name="$1"
   tl_version="$2"
   tar_install_url="$3"
+  ctan_repo="$4"
   IMAGE_NAME="$DOCKER_REPO:tl-$scheme_name"
   if [ ! -z "$tl_version" ]; then
     IMAGE_NAME="$IMAGE_NAME-$tl_version"
@@ -28,7 +29,8 @@ build_scheme(){
   docker build \
     --build-arg scheme="$scheme_name" \
     --build-arg tl_version="$2" \
-    --build-arg installfile="$tar_install_url"\
+    --build-arg installfile="$tar_install_url" \
+    --build-arg ctan_repo="$ctan_repo" \
     -t "$IMAGE_NAME" -f "$DOCKERFILE_PATH" .
 
   if [ -z "$LOCAL_DOCKER" ]; then
@@ -49,7 +51,7 @@ set_latest(){
   target_suffix="$1"
   add_tag "tl-small-$target_suffix" "tl-small"
   add_tag "tl-small-$target_suffix" "tl-small-latest"
-  if [ ! -z "$LOCAL_DOCKER" ]; then
+  if [ -z "$LOCAL_DOCKER" ]; then
     add_tag "tl-medium-$target_suffix" "tl-medium"
     add_tag "tl-medium-$target_suffix" "tl-medium-latest"
     add_tag "tl-full-$target_suffix" "tl-full"
@@ -57,14 +59,23 @@ set_latest(){
   fi
 }
 build_schemes(){
+  tl_version="$1"
+  tar_file="$2"
+  repo="$3"
   if [ -z "$LOCAL_DOCKER" ]; then
-    build_scheme "small" "2018" "$tar_2018"
-    build_scheme "medium" "2018" "$tar_2018"
-    build_scheme "full" "2018" "$tar_2018"
-    set_latest "2018"
+    build_scheme "small" "$tl_version" "$tar_file" "$repo"
+    build_scheme "medium" "$tl_version" "$tar_file" "$repo"
+    build_scheme "full" "$tl_version" "$tar_file" "$repo"
   else
-    build_scheme "minimal" "2018" "$tar_2018"
-    set_latest "2018"
+    build_scheme "minimal" "$tl_version" "$tar_file" "$repo"
   fi
 }
-build_schemes
+# Remember to update repovars.env too
+tar_2018="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/install-tl-unx.tar.gz"
+repo_2018="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/"
+tar_2019="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2019/install-tl-unx.tar.gz"
+repo_2019="https://ctan.crest.fr/tex-archive/systems/texlive/tlnet/"
+
+build_schemes "2018" "$tar_2018" "$repo_2018"
+# build_schemes "2019" "$tar_2019" "$repo_2019" "$repo_2019"
+# set_latest "2019"
