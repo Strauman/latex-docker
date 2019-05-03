@@ -13,6 +13,7 @@ echo "Image: $IMAGE_NAME"
 echo ""
 
 tar_2018="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/install-tl-unx.tar.gz"
+# repo_2018=""
 
 build_scheme(){
   scheme_name="$1"
@@ -62,7 +63,7 @@ build_schemes(){
     # build_scheme "full" "2018" "$tar_2018"
     set_latest "2018"
   else
-    build_scheme "small" "2018" "$tar_2018"
+    build_scheme "minimal" "2018" "$tar_2018"
     set_latest "2018"
   fi
 }
