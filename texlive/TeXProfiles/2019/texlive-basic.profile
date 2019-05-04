@@ -1,7 +1,7 @@
 # texlive.profile written on Fri May  3 14:34:00 2019 UTC
 # It will NOT be updated and reflects only the
 # installation profile at installation time.
-selected_scheme scheme-small
+selected_scheme scheme-basic
 TEXDIR /usr/local/texlive/2019
 TEXMFCONFIG ~/.texlive2019/texmf-config
 TEXMFHOME ~/texmf
