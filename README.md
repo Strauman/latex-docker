@@ -2,8 +2,11 @@
 Dockers for running LaTeX. Currently only TeXLive.
 
 Made for use in the more self sustained [travis-LaTeXBuild](https://github.com/Strauman/travis-latexbuild) repo.
+
 ## Tags -- Schemes and versions
-Three schemes based on the default install-tl software as described [here](https://www.tug.org/texlive/doc/install-tl.html#PROFILES).
+**NB:** The earlier `small` scheme is now renamed `basic` to be consistent with the texlive install profile names.
+
+Three schemes based on the default `install-tl` software as described [here](https://www.tug.org/texlive/doc/install-tl.html#PROFILES).
 
 Tags would be `strauman/tex:TAG`, where tag would be on the form `scheme` or `scheme-version`.
 Supported schemes are `basic`, `small` or `medium`.
