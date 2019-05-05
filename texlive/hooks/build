@@ -5,12 +5,12 @@
 if [ -z $LOCAL_DOCKER ]; then
   echo "NOT BUILDING LOCAL DOCKER"
 else
-  echo "BUILDING DOCKER LOCALLY. ONLY BUILDING SMALL BY DEFAULT."
+  echo "BUILDING DOCKER LOCALLY. ONLY BUILDING BASIC SCHEME BY DEFAULT."
 fi
 echo "Now in `pwd`"
 echo "Building"
 echo "Path: $DOCKERFILE_PATH"
-echo "Image: $IMAGE_NAME"
+# echo "Image: $IMAGE_NAME"
 echo ""
 
 
@@ -54,14 +54,14 @@ _set_latest(){
   target_suffix="$1"
   scheme_name="$2"
   add_tag "tl-$scheme_name-$target_suffix" "tl-$scheme_name"
-  add_tag "tl-$scheme_name-$target_suffix" "tl-$scheme_name-latest-latest"
+  add_tag "tl-$scheme_name-$target_suffix" "tl-$scheme_name-latest"
 }
 set_latest(){
   target_suffix="$1"
   _set_latest "$target_suffix" "basic"
-  _set_latest "$target_suffix" "small"
   if [ -z "$LOCAL_DOCKER" ]; then
     # We're on the docker hub, so let's build medium and full too
+  _set_latest "$target_suffix" "small"
   _set_latest "$target_suffix" "medium"
   # _set_latest "$target_suffix" "full"
   fi
@@ -76,7 +76,8 @@ build_schemes(){
     build_scheme "medium" "$tl_version" "$tar_file" "$repo"
     # build_scheme "full" "$tl_version" "$tar_file" "$repo"
   else
-    build_scheme "small" "$tl_version" "$tar_file" "$repo"
+    build_scheme "basic" "$tl_version" "$tar_file" "$repo"
+    # build_scheme "small" "$tl_version" "$tar_file" "$repo"
     # build_scheme "minimal" "$tl_version" "$tar_file" "$repo"
   fi
 }
@@ -87,11 +88,14 @@ legacy_url(){
 legacy_repo(){
   echo "http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/$1/tlnet-final/"
 }
-tar_2018=`legacy_url "2018"`
-repo_2018=`legacy_repo "2018"`
+build_legacies(){
+  # Tells docker to rebuild these frozen TeXLive versions.
+  tar_2018=`legacy_url "2018"`
+  repo_2018=`legacy_repo "2018"`
+  build_schemes "2018" "$tar_2018" "$repo_2018"
+}
+
 tar_2019="http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2019/install-tl-unx.tar.gz"
 repo_2019="https://ctan.crest.fr/tex-archive/systems/texlive/tlnet/"
-
-build_schemes "2018" "$tar_2018" "$repo_2018"
-# build_schemes "2019" "$tar_2019" "$repo_2019"
-set_latest "2018"
+build_schemes "2019" "$tar_2019" "$repo_2019"
+set_latest "2019"
